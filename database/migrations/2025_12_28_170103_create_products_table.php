@@ -13,15 +13,19 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
-            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('category_id')->constrained();
             $table->string('name');
-            $table->string('sku')->unique(); // Kode barang (misal: OLI-MPX-1)
-            $table->text('description')->nullable();
+            $table->string('sku')->unique();
             $table->integer('stock')->default(0);
-            $table->decimal('price', 12, 2);
-            $table->integer('min_stock')->default(5); // Notifikasi jika stok menipis
-        });
+            $table->integer('min_stock')->default(5);
+            
+            // Pemisahan Harga
+            $table->decimal('purchase_price', 12, 2); // Harga dari Supplier
+            $table->decimal('selling_price', 12, 2);  // Harga Jual Standar ke Konsumen
+            
+            $table->text('description')->nullable();
+            $table->timestamps();
+            });
     }
 
     /**

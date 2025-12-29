@@ -20,7 +20,9 @@ class ProductResource extends JsonResource
             'name'         => $this->name,
             'sku'          => $this->sku,
             'stock'        => $this->stock,
-            'price'        => (float) $this->price,
+            'modal'        => (float) $this->purchase_price, 
+            'harga_jual'   => (float) $this->selling_price,
+            'margin_profit'=> (float) ($this->selling_price - $this->purchase_price),
             'status_stock' => $this->stock <= $this->min_stock ? 'Hampir Habis' : 'Tersedia',
             'created_at'   => $this->created_at->format('Y-m-d H:i:s'),
             ];

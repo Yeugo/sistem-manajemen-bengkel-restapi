@@ -15,9 +15,23 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with('category')->latest()->get();
+        $query = Product::with('category');
+
+        if ($request->has('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%")
+                ->orWhere('sku', 'LIKE', "%{$search}%");
+            });
+        }
+
+        $products = $query->latest()->paginate(10);
         return ProductResource::collection($products);
     }
 
@@ -54,7 +68,18 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         $product->delete();
-        
+
         return response()->noContent();
     }
+
+    public function lowStock()
+    {
+        $lowStockProducts = Product::with('category')
+            ->whereColumn('stock', '<=', 'min_stock')
+            ->get();
+
+        return ProductResource::collection($lowStockProducts);
+    }
+
+
 }

@@ -23,14 +23,15 @@ class UpdateProductRequest extends FormRequest
     {
         $productId = $this->route('product')->id;
         return [
-            'category_id' => 'sometimes|required|exists:categories,id',
-            'name'        => 'sometimes|required|string|max:255',
+            'category_id'   => 'sometimes|required|exists:categories,id',
+            'name'          => 'sometimes|required|string|max:255',
             // Trik unique: unique:table,column,except_id
-            'sku'          => 'sometimes|required|string|unique:products,sku,' . $productId,
-            'description' => 'nullable|string',
-            'stock'       => 'sometimes|required|integer|min:0',
-            'price'       => 'sometimes|required|numeric|min:0',
-            'min_stock'   => 'sometimes|integer|min:0',
+            'sku'           => 'sometimes|required|string|unique:products,sku,' . $productId,
+            'description'   => 'nullable|string',
+            'stock'         => 'sometimes|required|integer|min:0',
+            'purchase_price'=> 'sometimes|required|numeric|min:0',
+            'selling_price' => 'sometimes|required|numeric|min:0',
+            'min_stock'     => 'sometimes|integer|min:0',
         ];
     }
 }
