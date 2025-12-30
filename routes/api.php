@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\TransactionController;
 
 // Endpoint yang bisa diakses publik (Tanpa Login)
@@ -24,6 +25,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('transactions', TransactionController::class)->only(['index', 'show']);
 
     Route::post('transactions', [TransactionController::class, 'store']);
+
+    Route::get('dashboard', [DashboardController::class, 'index']);
     
     // Endpoint logout
     Route::post('logout', [AuthController::class, 'logout']);
