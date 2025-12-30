@@ -17,14 +17,23 @@ class TransactionController extends Controller
     /**
      * Menampilkan semua riwayat transaksi (Laporan Penjualan)
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Eager loading 'details.product' untuk menghindari N+1 query
-        $transactions = Transaction::with('details.product')
-            ->latest()
-            ->paginate(10); // Menggunakan pagination agar tidak berat jika data banyak
+        $query = Transaction::with('details.product');
 
-        return TransactionResource::collection($transactions);
+        if (request()->has('search')) {
+            $search = request('search');
+            $query->where(function($q) use ($search) {
+                $q->where('reference_no', 'LIKE', "%{$search}%")
+                ->orWhere('notes', 'LIKE', "%{$search}%");
+            });
+        }
+
+        if ($request->has('start_date') && $request->has('end_date')) {
+            $query->whereBetween('created_at', [$request->start_date . " 00:00:00", $request->end_date . " 23:59:59"]);
+        }
+        
+        return TransactionResource::collection($query->latest()->paginate(10));
     }
 
     /**
