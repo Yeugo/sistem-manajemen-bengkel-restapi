@@ -15,10 +15,33 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::withCount('products')->get();
+        // $query = Category::withCount('products');
+
+        // if ($request->has('search')) {
+        //     $search = $request->search;
+        //     $query->where(function($q) use ($search) {
+        //         $q->where('name', 'LIKE', "%{$search}%")
+        //         ->orWhere('jumlah_produk', '>=', $search );
+        //     });
+        // }
+
+        $query = Category::withCount('products');
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            if (is_numeric($search)) {
+                $query->having('products_count', '<=', (int) $search);
+            } else {
+                $query->where('name', 'LIKE', "%{$search}%");
+            }
+        }
+
+        $categories = $query->latest()->paginate(10);
         return CategoryResource::collection($categories);
+        // $categories = Category::withCount('products')->get();
+        // return CategoryResource::collection($categories);
     }
 
     /**

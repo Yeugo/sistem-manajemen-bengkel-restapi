@@ -16,8 +16,8 @@ class CategoryResource extends JsonResource
     {
         return [
         'id'            => $this->id,
-        'nama'   => $this->name,
-        'slug'      => $this->slug,
+        'name'          => $this->name,
+        'slug'          => $this->slug,
         'jumlah_produk' => $this->whenCounted('products'),
         'link' => route('categories.show', $this->slug),
         ];
